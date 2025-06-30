@@ -95,4 +95,4 @@ router.post('/login', [
     }
 )
 
-export default Router;
+export default router;
