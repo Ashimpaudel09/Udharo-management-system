@@ -5,7 +5,7 @@ const fectchUser = (req, res, next) => {
         return res.status(401).json({ error: "Access denied: No token provided" });
     }
     try {
-        secret = process.env.JWT_SECRET
+        const secret = process.env.JWT_SECRET; 
         const data = jwt.verify(token, secret)
         req.user = data.userId;
         next();

@@ -2,19 +2,20 @@ import express from 'express';
 import { body, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import User from './models/User.js';
+import User from '../models/user.js';
 import dotenv from 'dotenv';
+dotenv.config()
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET
-dotenv.config()
+
 //Signup
 router.post('/signup',
     [
-        body('name', 'please enter a valid name').isLength(2),
+        body('name', 'please enter a valid name').isLength({ min: 5 }),
         body('email', 'Please enter a valid email').isEmail(),
-        body('password', 'Password must be atleast 6 character').isLength(6)
+        body('password', 'Password must be atleast 6 character').isLength({ min: 6 })
     ],
-    async (res, req) => {
+    async (req, res) => {
 
         const errors = validationResult(req)
         if (!errors.isEmpty()) {
@@ -45,12 +46,12 @@ router.post('/signup',
                 }
             }
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '7d' })
-            res.status(201).json({ token, userId: user.id, user_token: token });
+            res.status(201).json({ serId: user.id, user_token: token });
 
         }
         catch (err) {
             console.log(err.message)
-            res.status(500).send('server error')
+            return res.status(500).send('server error')
         }
 
     })
@@ -63,7 +64,7 @@ router.post('/login', [
     body('password', 'Password must be atleast 6 character').isLength(6)
 ],
 
-    async (res, req) => {
+    async (req, res) => {
         try {
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
@@ -85,7 +86,7 @@ router.post('/login', [
                 }
             }
             const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' })
-            res.json({ token, userId: user.id });
+            res.json({ user_token:token, userId: user.id });
 
         }
         catch (error) {
@@ -94,5 +95,4 @@ router.post('/login', [
         }
     }
 )
-
 export default router;
