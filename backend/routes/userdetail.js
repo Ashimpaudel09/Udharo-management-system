@@ -13,9 +13,6 @@ router.post('/submit/:id', fetchUser, [
     body('contactnumber', 'Contact must be 10 digits')
         .isLength({ min: 10, max: 10 })
         .isNumeric(),
-
-
-
 ], async (res, req) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

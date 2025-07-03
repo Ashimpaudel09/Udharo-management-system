@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-const fectchUser = (req, res, next) => {
+const fetchUser = (req, res, next) => {
     const token = req.header("auth-token")
     if (!token) {
         return res.status(401).json({ error: "Access denied: No token provided" });
@@ -7,7 +7,7 @@ const fectchUser = (req, res, next) => {
     try {
         const secret = process.env.JWT_SECRET; 
         const data = jwt.verify(token, secret)
-        req.user = data.userId;
+        req.user = data.user;
         next();
     }
     catch (error) {
@@ -15,4 +15,4 @@ const fectchUser = (req, res, next) => {
         res.status(401).json({ error: "Access denied: Invalid token" });
     }
 }
-export default fectchUser;
+export default fetchUser;
